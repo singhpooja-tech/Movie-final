@@ -339,6 +339,112 @@ def delete_movie(user_id, movie_id):
         warning_message = f"An error occurred: {e}"
         return redirect(f'/users/{user_id}?message={warning_message}')
 
+@app.route('/users/<int:user_id>/update_user', methods=['GET', 'POST'])
+def update_user(user_id):
+    """Update a username."""
+    if request.method == "GET":
+        try:
+            # Fetch user details
+            user = data.get_user(user_id)
+            logging.info(f"Fetched details for user {user_id}.")
+        except sqlalchemy.exc.NoResultFound:
+            logging.warning(f"User {user_id} not found.")
+            abort(404)
+        return render_template('update_user.html', user=user, user_id=user_id)
+
+    if request.method == "POST":
+        user_name = request.form.get("name").strip()
+
+        # Validate username length
+        if not user_name:
+            logging.warning(f"Attempted to update user {user_id} with an empty name.")
+            warning_message = "Username can't be empty."
+            try:
+                user = data.get_user(user_id)
+            except sqlalchemy.exc.NoResultFound:
+                logging.warning(f"User {user_id} not found.")
+                abort(404)
+            return render_template('update_user.html', user=user,
+                                   user_id=user_id, warning_message=warning_message)
+
+        if len(user_name) < 2:
+            logging.warning(f"Attempted to update user {user_id} with a name less than 2 characters.")
+            warning_message = "Name must be at least 2 characters long."
+            try:
+                user = data.get_user(user_id)
+            except sqlalchemy.exc.NoResultFound:
+                logging.warning(f"User {user_id} not found.")
+                abort(404)
+            return render_template('update_user.html', user=user,
+                                   user_id=user_id, warning_message=warning_message)
+
+        if len(user_name) > 50:
+            logging.warning(f"Attempted to update user {user_id} with a name exceeding 50 characters.")
+            warning_message = "Name cannot exceed 50 characters."
+            try:
+                user = data.get_user(user_id)
+            except sqlalchemy.exc.NoResultFound:
+                logging.warning(f"User {user_id} not found.")
+                abort(404)
+            return render_template('update_user.html', user=user,
+                                   user_id=user_id, warning_message=warning_message)
+
+        try:
+            # Update user details
+            data.update_user(user_id=user_id, user_name=user_name)
+            user = data.get_user(user_id)  # Fetch updated user details
+            logging.info(f"User {user_id} updated successfully with new name: {user_name}.")
+        except Exception as e:
+            logging.error(f"Error updating user {user_id}: {e}")
+            error_message = "An error occurred while updating the user. Please try again."
+            try:
+                user = data.get_user(user_id)
+            except sqlalchemy.exc.NoResultFound:
+                logging.warning(f"User {user_id} not found after update attempt.")
+                abort(404)
+            return render_template('update_user.html', user=user,
+                                   user_id=user_id, warning_message=error_message)
+
+        success_message = f"User '{user_name}' updated successfully!"
+        return render_template('update_user.html',
+                               success_message=success_message, user=user, user_id=user_id)
+
+
+@app.route('/users/<user_id>/delete_user', methods=['GET'])
+def delete_user(user_id):
+    """Delete a user from the system."""
+    try:
+        # Attempt to delete the user and get their name
+        user_name = data.delete_user(user_id)
+
+        if user_name is None:
+            logging.warning(f"Attempted to delete user with ID {user_id}, but user was not found.")
+            warning_message = f"User with ID {user_id} not found."
+            return redirect(f'/users?warning_message={warning_message}')
+
+        # Log successful deletion
+        logging.info(f"User '{user_name}' with ID {user_id} deleted successfully.")
+
+        # Redirect with a success message
+        success_message = f"User '{user_name}' deleted successfully!"
+        return redirect(f'/users?success_message={success_message}')
+
+    except ValueError as e:
+        logging.error(f"ValueError deleting user {user_id}: {e}")
+        warning_message = str(e)
+        return redirect(f'/users?warning_message={warning_message}')
+
+    except Exception as e:
+        logging.error(f"Unexpected error deleting user {user_id}: {e}")
+        warning_message = "An unexpected error occurred. Please try again."
+        return redirect(f'/users?warning_message={warning_message}')
+
+
+@app.errorhandler(404)
+def handle_404_error(e):
+    """Handle 404 errors globally and display the error description."""
+    return render_template('404.html'), 404
+
 
 if __name__ == '__main__':
     app.run(port=5001, host='0.0.0.0', debug=True)

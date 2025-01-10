@@ -1,30 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>MovieWeb App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body class="home">
-    <nav>
-        <a href="/"><button>Home</button></a>
-        <a href="/movies"><button>Movies</button></a>
-        <a href="/users"><button>Users</button></a>
-    </nav>
-    <div class="content">
-        <h1><span class="filled">MovieWeb</span> <span class="outlined">App</span></h1>
-    </div>
-    <div class="description">
-        <p>Do you dream of having your very own movie gallery?</p>
-        <p>With MovieWeb App, you can make that a reality!</p>
-        <p>Organize and track your favorite movies, rate them,</p>
-        <p>and create a personalized collection.</p>
-        <p>Simply register as a user, start adding movies,</p>
-        <p>and experience cinema like never before!</p>
-    </div>
+{% extends "base.html" %}
 
-    <a href="/add_user" class="add-user-btn">Add User</a>
-</body>
-</html>
+{% block pagename %}
+    <h2>Home</h2>
+{% endblock %}
+
+{% block content %}
+    <h2 class="h2_home">Welcome to My MoviesWeb</h2>
+<div class="content_home">
+    <p>Your personal movie hub for exploring, managing, and enjoying films.</p>
+    <p>Here, you can:</p>
+    <ul>
+        <li>Search and add your favorite movies from OMDb.</li>
+        <li> Create, update, and delete users in the app.</li>
+        <li> Associate movies with users, update their details, and remove them when needed.</li>
+        <li>Keep track of all your movies in a personalized list.</li>
+        <li>Like, update, and delete movies with ease!</li>
+    </ul>
+    <p>Explore, organize, and keep your movie collection fresh and exciting!</p>
+    <p>Read about all the detailed functionalities of the app in the 'Help' page!</p>
+        </div>
+{% endblock %}

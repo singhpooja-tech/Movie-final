@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Add Movie</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body class="add_movie">
-    <nav>
-        <a href="/"><button>Home</button></a>
-        <a href="/movies"><button>Movies</button></a>
-        <a href="/users"><button>Users</button></a>
-    </nav>
+{% extends "base.html" %}
 
-    <div class="user_title">
-        <h1><span class="filled">{{ user.name }}'s</span> <span class="outlined">Movies</span></h1>
+
+{% block content %}
+<div class="form-container">
+<h2>Add Movie for {{ user.name }}</h2>
+<form method="POST">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+    <button type="submit" class="btn">Add Movie</button>
+</form>
     </div>
-
-     <div class="message-container">
-      <!-- Success message -->
-      {% if success_message %}
-        <p class="alert alert-success">{{ success_message }}</p>
-      {% endif %}
-
-      <!-- Warning message -->
-      {% if warning_message %}
-        <p class="alert alert-warning">{{ warning_message }}</p>
-      {% endif %}
-    </div>
-
-    <form action="/users/{{ user.id }}/add_movie" method="POST" class="form">
-        <label for="title">Please enter a movie title</label>
-        <input type="text" id="title" name="title" required><br><br>
-        <input type="submit" value="Add Movie">
-    </form>
-  </body>
-</html>
+{% endblock %}

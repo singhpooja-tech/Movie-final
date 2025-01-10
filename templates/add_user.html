@@ -1,36 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Add User</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  </head>
-  <body class="add_user">
-    <nav>
-        <a href="/"><button>Home</button></a>
-        <a href="/movies"><button>Movies</button></a>
-        <a href="/users"><button>Users</button></a>
-    </nav>
+{% extends "base.html" %}
 
-    <div class="message-container">
-      <!-- Success message -->
-      {% if success_message %}
-        <p class="alert alert-success">{{ success_message }}</p>
-      {% endif %}
 
-      <!-- Warning message -->
-      {% if warning_message %}
-        <p class="alert alert-warning">{{ warning_message }}</p>
-      {% endif %}
+{% block pagename %}
+        <h2>Add User</h2>
+        {% endblock %}
+{% block content %}
+<div class="form-container">
+<h2>Add New User</h2>
+<form method="POST">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required minlength="3" maxlength="20">
+    <br><br>
+    <button type="submit" class="btn">Add User</button>
+</form>
     </div>
-
-    <!-- Form for adding an user -->
-    <form action="/add_user" method="POST" class="styled-form">
-      <label for="name">Please enter Username</label>
-      <input type="text" id="name" name="name" required><br><br>
-      <input type="submit" value="Add User">
-    </form>
-  </body>
-</html>
+{% endblock %}
